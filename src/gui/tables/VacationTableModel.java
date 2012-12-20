@@ -59,9 +59,9 @@ public class VacationTableModel extends AbstractTableModel {
 		case PREIS:
 			return dataBean.getPreis();
 		case ISOLAND:
-			return dataBean.getiSOLand();
+			return dataBean.getLand().getISOLand();
 		case LANDNAME:
-			return dataBean.getiSOLand();
+			return dataBean.getLand().getName();
 		case ORT:
 			return dataBean.getOrt();
 		default:

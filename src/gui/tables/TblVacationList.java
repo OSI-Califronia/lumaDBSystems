@@ -1,18 +1,18 @@
 package gui.tables;
 
 import gui.MainWindow;
+import gui.dialogs.DlgVacationSearch;
 import gui.navigation.MnuTblVacation;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Dictionary;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import data.IDBHandle;
+import data.ReservationSearchBean;
 import data.VacationBean;
 
 public class TblVacationList extends JTable {
@@ -20,17 +20,7 @@ public class TblVacationList extends JTable {
 	private class SearchAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-//			VacationBean searchBean = new VacationBean<String, String>();			
-	
-			List<VacationBean> list = getHandler().searchForHolidayVacation();
-			
-			if (list.isEmpty()) {
-				JOptionPane.showMessageDialog(mainWindow,
-						"Für diese Suchkriterien wurde kein Eintrag gefunden");
-				return;
-			}
-		
-			getTableModel().setDataToModel(list);			
+			getSearchDialog().setVisible(true);
 		}
 	}
 	
@@ -39,8 +29,7 @@ public class TblVacationList extends JTable {
 
 	private MainWindow mainWindow;
 	private MnuTblVacation tblMenu;
-
-//	private BindDictionaryData binder;
+	private DlgVacationSearch dlgSearch;
 
 
 	protected SearchAction searchAction;
@@ -50,15 +39,15 @@ public class TblVacationList extends JTable {
 
 		this.mainWindow = mainWindow;
 		
-//		this.mainWindow.getJMenuBar().add(getTblMenu());
-//		frmMainWindow.pack();
-//		frmMainWindow.repaint();
+		this.mainWindow.getJMenuBar().add(getTblMenu());
+		this.mainWindow.pack();
+		this.mainWindow.repaint();
 	}
 
 	
 
 	public void refreshList() {
-//		getBinder().refreshList();
+		doSearch(new ReservationSearchBean());
 	}
 
 	// public void showNoEntryFoundMessage() {
@@ -87,19 +76,27 @@ public class TblVacationList extends JTable {
 		return searchAction;
 	}
 
-
-
 	public IDBHandle getHandler() {
 		return handle;
 	}
-
-//	public BindDictionaryData getBinder() {
-//		if (binder == null) {
-//			binder = new BindDictionaryData(this);
-//		}
-//		return binder;
-//		return null;
-//	}
-
+	
+	public DlgVacationSearch getSearchDialog() {
+		if (dlgSearch == null) {
+			dlgSearch = new DlgVacationSearch(this);			
+		}
+		return dlgSearch;
+	}
+	
+	public void doSearch(ReservationSearchBean searchBean) {
+		List<VacationBean> list = getHandler().searchForHolidayVacation(searchBean);
+		
+		if (list.isEmpty()) {
+			JOptionPane.showMessageDialog(mainWindow,
+					"Für diese Suchkriterien wurde kein Eintrag gefunden");
+			return;
+		}
+	
+		getTableModel().setDataToModel(list);			
+	}
 	
 }

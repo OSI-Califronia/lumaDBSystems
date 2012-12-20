@@ -46,13 +46,7 @@ public class DBHandler implements IDBHandle {
 		}
 	}
 	
-	public List<VacationBean> searchForHolidayVacation(
-			String isoLand,
-			int minAnzahlZimmer,
-			Date datumVon,
-			Date datumBis,
-			int AustNr
-			) {
+	public List<VacationBean> searchForHolidayVacation(ReservationSearchBean searchBean) {
 		List<VacationBean> retVal = new LinkedList<VacationBean>();
 		
 		try {
