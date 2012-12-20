@@ -21,6 +21,21 @@ public class TblVacationList extends JTable {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			getSearchDialog().setVisible(true);
+			getSearchDialog().setModal(true);
+			
+//			DateFormat deDate = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.GERMANY);
+//
+//			
+//			try {
+//				ReservationSearchBean searchBean = new ReservationSearchBean(
+//						"ES", 2, deDate.parse("01.11.2012"), deDate.parse("21.11.2012"), 2);
+//				
+//				List<VacationBean> list = getHandler().searchForHolidayVacation(searchBean);
+//				getTableModel().setDataToModel(list);			
+//				
+//			} catch (ParseException e1) {				
+//				e1.printStackTrace();
+//			}
 		}
 	}
 	
@@ -36,6 +51,8 @@ public class TblVacationList extends JTable {
 
 	public TblVacationList(MainWindow mainWindow, IDBHandle handle) {
 		super(getTableModel());
+		
+		this.handle = handle;
 
 		this.mainWindow = mainWindow;
 		
@@ -95,7 +112,9 @@ public class TblVacationList extends JTable {
 					"Für diese Suchkriterien wurde kein Eintrag gefunden");
 			return;
 		}
-	
+		
+		getSearchDialog().setVisible(false);	
+		mainWindow.setVisible(true);
 		getTableModel().setDataToModel(list);			
 	}
 	

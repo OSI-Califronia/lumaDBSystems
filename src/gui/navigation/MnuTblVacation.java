@@ -40,7 +40,7 @@ public class MnuTblVacation extends JMenu {
 
 	private JMenuItem getMniSearch() {
 		if (mniSearch == null) {
-		     mniSearch = new JMenuItem("Wort suchen");
+		     mniSearch = new JMenuItem("Ferienwohnung suchen");
 		     mniSearch.addActionListener(table.getSearchAction());
 		}
 		return mniSearch;
