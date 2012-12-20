@@ -8,12 +8,15 @@ public class CountryBean {
 	public String getISOLand() {
 		return ISOLand;
 	}
+	
 	public void setISOLand(String iSOLand) {
 		ISOLand = iSOLand;
 	}
+	
 	public String getName() {
 		return Name;
 	}
+	
 	public void setName(String name) {
 		Name = name;
 	}

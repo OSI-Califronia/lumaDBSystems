@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,7 +46,13 @@ public class DBHandler implements IDBHandle {
 		}
 	}
 	
-	public List<VacationBean> searchForHolidayVacation() {
+	public List<VacationBean> searchForHolidayVacation(
+			String isoLand,
+			int minAnzahlZimmer,
+			Date datumVon,
+			Date datumBis,
+			int AustNr
+			) {
 		List<VacationBean> retVal = new LinkedList<VacationBean>();
 		
 		try {
@@ -63,7 +70,7 @@ public class DBHandler implements IDBHandle {
 				bean.setAnzZimmer(res.getInt(3));
 				bean.setGroesse(res.getInt(4));
 				bean.setPreis(res.getDouble(5));
-				bean.setiSOLand(res.getString(6));
+				// TODO: bean.setiSOLand(res.getString(6));
 				bean.setOrt(res.getString(7));			
 				retVal.add(bean);
 				
@@ -83,8 +90,25 @@ public class DBHandler implements IDBHandle {
 
 	@Override
 	public List<CountryBean> getAllCountries() {
-		// TODO Auto-generated method stub
-		return null;
+		List<CountryBean> retVal = new LinkedList<CountryBean>();
+		try {
+			setConnection();
+			Statement stmt = getConnection().createStatement();
+			ResultSet res = stmt.executeQuery("SELECT ISO, Name FROM Land");
+			while (res.next()) {
+				CountryBean bean = new CountryBean();
+				bean.setISOLand(res.getString(1));
+				bean.setName(res.getString(2));
+				retVal.add(bean);
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+		return retVal;
 	}
 
 	@Override
@@ -92,7 +116,6 @@ public class DBHandler implements IDBHandle {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
 	
 }
