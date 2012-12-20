@@ -9,14 +9,14 @@ import data.VacationBean;
 
 public class VacationTableModel extends AbstractTableModel {
 	
-	public static final int NUMBER = 1;
-	public static final int NAME = 2;
-	public static final int ANZZIMMER = 3;
-	public static final int GROESE = 4;
-	public static final int PREIS = 5;
-	public static final int ISOLAND = 6;
-	public static final int LANDNAME = 7;
-	public static final int ORT = 8;
+	public static final int NUMBER = 0;
+	public static final int NAME = 1;
+	public static final int ANZZIMMER = 2;
+	public static final int GROESE = 3;
+	public static final int PREIS = 4;
+	public static final int ISOLAND = 5;
+	public static final int LANDNAME = 6;
+	public static final int ORT = 7;
 	
 	private List<VacationBean> data;
 	private String[] columnNames;
