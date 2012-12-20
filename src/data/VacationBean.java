@@ -7,7 +7,7 @@ public class VacationBean {
 	private Integer anzZimmer;
 	private Integer groesse;
 	private Double  preis;
-	private String  iSOLand;
+	private CountryBean land;
 	private String  ort;
 	
 	public VacationBean() {
@@ -15,14 +15,14 @@ public class VacationBean {
 	}
 
 	public VacationBean(Integer nr, String name, Integer anzZimmer,
-			Integer groesse, Double preis, String iSOLand, String ort) {
+			Integer groesse, Double preis, CountryBean land, String ort) {
 		super();
 		this.nr = nr;
 		this.name = name;
 		this.anzZimmer = anzZimmer;
 		this.groesse = groesse;
 		this.preis = preis;
-		this.iSOLand = iSOLand;
+		this.land = land;
 		this.ort = ort;
 	}
 
@@ -66,12 +66,12 @@ public class VacationBean {
 		this.preis = preis;
 	}
 
-	public String getiSOLand() {
-		return iSOLand;
+	public CountryBean getLand() {
+		return land;
 	}
 
-	public void setiSOLand(String iSOLand) {
-		this.iSOLand = iSOLand;
+	public void setLand(CountryBean land) {
+		this.land = land;
 	}
 
 	public String getOrt() {
