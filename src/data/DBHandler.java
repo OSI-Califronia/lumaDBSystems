@@ -59,7 +59,7 @@ public class DBHandler implements IDBHandle {
 			ReservationSearchBean searchBean;
 
 			searchBean = new ReservationSearchBean(
-					"ES", 2, deDate.parse("01.11.2012"), deDate.parse("21.11.2012"), 2);
+					"ES", 2, deDate.parse("01.11.2012"), deDate.parse("21.11.2012"), -1);
 
 
 			System.out.println("######### häuser in ES mit sauna (nr. 2) zwischen 1.11.2012 und 21.11.2012 ######");
@@ -90,46 +90,51 @@ public class DBHandler implements IDBHandle {
 
 	public List<VacationBean> searchForHolidayVacation(ReservationSearchBean searchBean) {
 		List<VacationBean> retVal = new LinkedList<VacationBean>();
-
+		String searchSql = "";
 		try {
-			String searchSql = "SELECT w.FerienwohnungNr, w.Name, w.AnzZimmer, w.Groesse, w.Preis, w.ort, l.ISO, l.Name" + 
-					" FROM Ferienwohnung w" + 
-					" INNER JOIN Land l ON l.ISO = w.ISOLand" + 
-					" INNER JOIN AustFeZuordnung z ON z.FeNr = w.FerienwohnungNr" + 
-					" INNER JOIN Ausstattung a ON a.AustNr = z.AustNr" + 
-					" WHERE a.AustNr = ?" + 
-					"  AND w.ISOLAnd = ?" + 
-					"  AND NOT EXISTS (" + 
-					"    SELECT r.BuchungsNr" + 
-					"    FROM Reservierung r" + 
-					"    WHERE r.FeNr = w.FerienwohnungNr " + 
-					"          AND w.anzZimmer >= ?" + 
-					"          AND" + 
-					"          ( r.DatumVon BETWEEN ? AND ?" + 
+			searchSql = "SELECT DISTINCT w.FerienwohnungNr, w.Name, w.AnzZimmer, w.Groesse, w.Preis, w.ort, l.ISO, l.Name\n" + 
+					" FROM Ferienwohnung w\n" + 
+					" INNER JOIN Land l ON l.ISO = w.ISOLand\n" + 
+					" INNER JOIN AustFeZuordnung z ON z.FeNr = w.FerienwohnungNr\n" + 
+					" INNER JOIN Ausstattung a ON a.AustNr = z.AustNr\n" + 
+					" WHERE w.ISOLAnd = ?";
+			if (searchBean.getAustNr() >= 0) {  // ausstattung optional
+				searchSql += "  AND a.AustNr = ?\n";
+			}
+			searchSql += " AND NOT EXISTS ( \n" + 
+					"      SELECT r.BuchungsNr \n" + 
+					"      FROM Reservierung r \n" + 
+					"      WHERE r.FeNr = w.FerienwohnungNr \n" + 
+					"          AND w.anzZimmer >= ? \n" + 
+					"          AND \n" + 
+					"          ( r.DatumVon BETWEEN ? AND ? \n" + 
 					"            OR  " + 
-					"            r.DatumBis BETWEEN ? AND ?" + 
-					"            OR" + 
-					"            (" + 
-					"              r.DatumVon < ?" + 
-					"              AND" + 
-					"              r.DatumBis > ?" + 
-					"            )" + 
-					"          )" + 
-					"  )";
+					"            r.DatumBis BETWEEN ? AND ? \n" + 
+					"            OR \n" + 
+					"            ( \n" + 
+					"              r.DatumVon < ? \n" + 
+					"              AND \n" + 
+					"              r.DatumBis > ? \n" + 
+					"            ) \n" + 
+					"          ) \n" + 
+					"  ) \n";
 
 			setConnection();
 
 			PreparedStatement query = getConnection().prepareStatement(searchSql);
-			query.setInt(1, searchBean.getAustNr());  // equipment id
-			query.setString(2, searchBean.getIsoLand());
-			query.setInt(3, searchBean.getMinAnzahlZimmer());
-			query.setDate(4, new java.sql.Date(searchBean.getDatumVon().getTime()));
-			query.setDate(5, new java.sql.Date(searchBean.getDatumBis().getTime()));
-			query.setDate(6, new java.sql.Date(searchBean.getDatumVon().getTime()));
-			query.setDate(7, new java.sql.Date(searchBean.getDatumBis().getTime()));
-			query.setDate(8, new java.sql.Date(searchBean.getDatumVon().getTime()));
-			query.setDate(9, new java.sql.Date(searchBean.getDatumBis().getTime()));
-
+			int i = 1;
+			query.setString(i++, searchBean.getIsoLand());
+			if (searchBean.getAustNr() >= 0) {
+			query.setInt(i++, searchBean.getAustNr());  // equipment id
+			}
+			query.setInt(i++, searchBean.getMinAnzahlZimmer());
+			query.setDate(i++, new java.sql.Date(searchBean.getDatumVon().getTime()));
+			query.setDate(i++, new java.sql.Date(searchBean.getDatumBis().getTime()));
+			query.setDate(i++, new java.sql.Date(searchBean.getDatumVon().getTime()));
+			query.setDate(i++, new java.sql.Date(searchBean.getDatumBis().getTime()));
+			query.setDate(i++, new java.sql.Date(searchBean.getDatumVon().getTime()));
+			query.setDate(i++, new java.sql.Date(searchBean.getDatumBis().getTime()));
+			
 			ResultSet res = query.executeQuery();
 
 			while (res.next()) {
@@ -144,8 +149,10 @@ public class DBHandler implements IDBHandle {
 				retVal.add(bean);
 			}
 
-		} catch (SQLException esql) {		
+		} catch (SQLException esql) {	
+			
 			esql.printStackTrace();
+			System.out.println(searchSql);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
