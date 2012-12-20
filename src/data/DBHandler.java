@@ -10,7 +10,7 @@ import java.util.List;
 
 import oracle.jdbc.driver.OracleDriver;
 
-public class DBHandler {	
+public class DBHandler implements IDBHandle {	
 	
 	public final static String DB_URL = "jdbc:oracle:thin:@oracle11g.in.htwg-konstanz.de:1521:ora11g";
 
@@ -79,6 +79,18 @@ public class DBHandler {
 		}
 		
 		return retVal;
+	}
+
+	@Override
+	public List<CountryBean> getAllCountries() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<EquipmentBean> getAllEquipments() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
