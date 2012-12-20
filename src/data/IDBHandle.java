@@ -6,12 +6,7 @@ import java.util.List;
 public interface IDBHandle {
 
 	
-	public List<VacationBean> searchForHolidayVacation(
-			String isoLand,
-			int minAnzahlZimmer,
-			Date datumVon,
-			Date datumBis,
-			int AustNr);
+	public List<VacationBean> searchForHolidayVacation(ReservationSearchBean searchBean);		
 	
 	public List<CountryBean> getAllCountries();
 	
