@@ -9,8 +9,8 @@ public class CountryBean {
 		return ISOLand;
 	}
 	
-	public void setISOLand(String iSOLand) {
-		ISOLand = iSOLand;
+	public void setISOLand(String isoLand) {
+		ISOLand = isoLand;
 	}
 	
 	public String getName() {
@@ -23,7 +23,14 @@ public class CountryBean {
 	
 	@Override
 	public String toString() {
-		return this.getISOLand() + " " + this.getName();
+		return this.getName() + " " + this.getISOLand() + ")";
+	}
+	
+	public CountryBean() {super();}
+	
+	public CountryBean(String iso, String name) {
+		this.setISOLand(iso);
+		this.setName(name);
 	}
 
 }

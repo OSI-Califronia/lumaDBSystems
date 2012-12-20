@@ -85,16 +85,18 @@ public class VacationBean {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getNr());
-		sb.append(" ");
+		sb.append(": ");
 		sb.append(getName());
-		sb.append(" ");
+		sb.append(", ");
 		sb.append(getAnzZimmer());
-		sb.append(" ");
+		sb.append(" Zimmer, ");
 		sb.append(getGroesse());
-		sb.append(" ");
+		sb.append(" qm, ");
 		sb.append(getOrt());
-		sb.append(" ");
+		sb.append(", ");
 		sb.append(getPreis());
+		sb.append(" €/Tag, ");
+		sb.append(getLand().toString());
 		return sb.toString();
 	}
 	
