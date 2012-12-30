@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,9 +22,10 @@ import javax.swing.JTextField;
 import com.toedter.calendar.JCalendar;
 
 import data.CountryBean;
+import data.EquipmentBean;
 import data.ReservationSearchBean;
-import data.VacationBean;
 
+@SuppressWarnings("serial")
 public class DlgVacationSearch extends JDialog {
 
 	private JPanel bpaButtons;
@@ -34,7 +36,9 @@ public class DlgVacationSearch extends JDialog {
 	private JTextField tfiAnzZimmer;	
 	private JCalendar calFrom;	
 	private JCalendar calTill;	
-	private JComboBox cbxCountry;
+	private JComboBox<CountryBean> cbxCountry;
+	private JComboBox<EquipmentBean> cbxEquipment;
+	private Insets defaultInsets;
 	
 	private TblVacationList table;
 	
@@ -46,61 +50,97 @@ public class DlgVacationSearch extends JDialog {
 	}
 	
 	private void initialize() {
-		Dimension size = new Dimension(600, 400);
+		Dimension size = new Dimension(500, 500);
 		this.setSize(size);
 		this.setPreferredSize(size);
-		this.getRootPane().setBorder(BorderFactory.createTitledBorder("Ferienwohnung Suchen"));
-		this.getRootPane().setLayout(new BorderLayout());
-		this.getRootPane().add(getBpaDefault(), BorderLayout.CENTER);
-		this.getRootPane().add(getBpaButtons(), BorderLayout.SOUTH);		
+		//this.setBorder(BorderFactory.createTitledBorder("Ferienwohnung Suchen"));
+		this.setLayout(new BorderLayout());
+		this.add(getBpaDefault(), BorderLayout.CENTER);
+		this.add(getBpaButtons(), BorderLayout.SOUTH);		
+//		this.getRootPane().setBorder(BorderFactory.createTitledBorder("Ferienwohnung Suchen"));
+//		this.getRootPane().setLayout(new BorderLayout());
+//		this.getRootPane().add(getBpaDefault(), BorderLayout.CENTER);
+//		this.getRootPane().add(getBpaButtons(), BorderLayout.SOUTH);		
+	}
+	
+	private Insets getDefaultInsets() {
+		if (defaultInsets == null) {
+			defaultInsets = new Insets(5, 5, 5, 5);
+			
+		}
+		return defaultInsets;
 	}
 	
 	protected JPanel getBpaDefault() {
 		if (bpaDefault == null) {
 			bpaDefault = new JPanel();
 			bpaDefault.setLayout(new GridBagLayout());
-			bpaDefault.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			
+			// DatumVon
 			GridBagConstraints c = new GridBagConstraints();
-//			c.fill = GridBagConstraints.HORIZONTAL;
+			c.insets = getDefaultInsets();
 			c.gridx = 0;
-			c.gridy = 3;
-			bpaDefault.add(new JLabel("Anzahl Zimmer:"), c);
-			
-//			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridx = 1;
-			c.gridy = 3;
-			bpaDefault.add(getTfiAnzZimmer(), c);
-			
-//			c.fill = GridBagConstraints.HORIZONTAL;
-			c.gridx = 0;
-			c.gridy = 1;
-			
+			c.gridy = 0;
 			bpaDefault.add(new JLabel("Datum von:"), c);
 			
-//			c.fill = GridBagConstraints.HORIZONTAL;
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
 			c.gridx = 0;
-			c.gridy = 2;
+			c.gridy = 1;
 			bpaDefault.add(getCalFrom(), c);
 			
-//			c.fill = GridBagConstraints.HORIZONTAL;
+			// DatumBis
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
 			c.gridx = 1;
-			c.gridy = 1;
+			c.gridy = 0;
 			bpaDefault.add(new JLabel("Datum bis:"), c);
 			
-//			c.fill = GridBagConstraints.HORIZONTAL;
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
 			c.gridx = 1;
-			c.gridy = 2;
+			c.gridy = 1;
 			bpaDefault.add(getCalTill(), c);
 			
-//			c.fill = GridBagConstraints.HORIZONTAL;
+			// AnzZimmer
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
 			c.gridx = 0;
-			c.gridy = 4;
+			c.gridy = 2;
+			bpaDefault.add(new JLabel("Anzahl Zimmer:"), c);
+			
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
+			c.gridx = 1;
+			c.gridy = 2;
+			bpaDefault.add(getTfiAnzZimmer(), c);
+			
+			// Land
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
+			c.gridx = 0;
+			c.gridy = 3;
 			bpaDefault.add(new JLabel("Land:"), c);
 			
-//			c.fill = GridBagConstraints.HORIZONTAL;
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
+			c.gridx = 1;
+			c.gridy = 3;
+			bpaDefault.add(getCbxCountry(), c);
+			
+			// Ausstattung
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
+			c.gridx = 0;
+			c.gridy = 4;
+			bpaDefault.add(new JLabel("Ausstattung:"), c);
+			
+			c = new GridBagConstraints();
+			c.insets = getDefaultInsets();
 			c.gridx = 1;
 			c.gridy = 4;
-			bpaDefault.add(getCbxCountry(), c);
+			bpaDefault.add(getCbxEquipment(), c);	
+			
 		}
 		return bpaDefault;
 	}
@@ -130,10 +170,20 @@ public class DlgVacationSearch extends JDialog {
 		return calTill;		
 	}
 
-
-	public JComboBox getCbxCountry() {
+	
+	
+	public JComboBox<EquipmentBean> getCbxEquipment() {
+		if (cbxEquipment == null) {
+			cbxEquipment = new JComboBox<EquipmentBean>(table.getHandler().getAllEquipments().toArray(new EquipmentBean[0]));
+			cbxEquipment.setEditable(true);
+			cbxEquipment.setPreferredSize(new Dimension(200, 30));
+		}
+		return cbxEquipment;		
+	}
+	
+	public JComboBox<CountryBean> getCbxCountry() {
 		if (cbxCountry == null) {
-			cbxCountry = new JComboBox(table.getHandler().getAllCountries().toArray());			
+			cbxCountry = new JComboBox<CountryBean>(table.getHandler().getAllCountries().toArray(new CountryBean[0]));			
 			cbxCountry.setPreferredSize(new Dimension(200, 30));
 		}
 		return cbxCountry;		

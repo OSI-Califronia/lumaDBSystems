@@ -23,7 +23,7 @@ public class CountryBean {
 	
 	@Override
 	public String toString() {
-		return this.getName() + " " + this.getISOLand() + ")";
+		return this.getName() + " (" + this.getISOLand() + ")";
 	}
 	
 	public CountryBean() {super();}

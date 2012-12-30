@@ -13,9 +13,12 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import data.IDBHandle;
 
+@SuppressWarnings("serial")
 public class MainWindow extends JFrame {
 	
 	private class CloseAction extends WindowAdapter implements ActionListener {
@@ -58,6 +61,14 @@ public class MainWindow extends JFrame {
 	}
 	
 	private void initialize() {
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		
 		this.setTitle("Woerterbuch");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(getCloseAction());

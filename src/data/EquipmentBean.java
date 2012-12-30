@@ -22,7 +22,7 @@ public class EquipmentBean {
 	
 	@Override
 	public String toString() {
-		return this.getName() + " " + this.getEquipNr() + ")";
+		return this.getName() + " (" + this.getEquipNr() + ")";
 	}
 
 }
