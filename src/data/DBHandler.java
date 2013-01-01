@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -63,21 +62,21 @@ public class DBHandler implements IDBHandle {
 
 
 			System.out.println("######### häuser in ES mit sauna (nr. 2) zwischen 1.11.2012 und 21.11.2012 ######");
-			
+
 			List<VacationBean> list = handler.searchForHolidayVacation(searchBean);
 			for (VacationBean vb : list) {
 				System.out.println(vb.toString());
 			}
-			
+
 			System.out.println("\n\n ######### Alle Länder ###### ");
-			
+
 			List<CountryBean> countries = handler.getAllCountries();
 			for (CountryBean cb : countries) {
 				System.out.println(cb.toString());
 			}
-			
+
 			System.out.println("\n\n ######### Alle Ausstattungen ###### ");
-			
+
 			List<EquipmentBean> austattungen = handler.getAllEquipments();
 			for (EquipmentBean eb : austattungen) {
 				System.out.println(eb.toString());
@@ -125,7 +124,7 @@ public class DBHandler implements IDBHandle {
 			int i = 1;
 			query.setString(i++, searchBean.getIsoLand());
 			if (searchBean.getAustNr() >= 0) {
-			query.setInt(i++, searchBean.getAustNr());  // equipment id
+				query.setInt(i++, searchBean.getAustNr());  // equipment id
 			}
 			query.setInt(i++, searchBean.getMinAnzahlZimmer());
 			query.setDate(i++, new java.sql.Date(searchBean.getDatumVon().getTime()));
@@ -134,7 +133,7 @@ public class DBHandler implements IDBHandle {
 			query.setDate(i++, new java.sql.Date(searchBean.getDatumBis().getTime()));
 			query.setDate(i++, new java.sql.Date(searchBean.getDatumVon().getTime()));
 			query.setDate(i++, new java.sql.Date(searchBean.getDatumBis().getTime()));
-			
+
 			ResultSet res = query.executeQuery();
 
 			while (res.next()) {
@@ -150,7 +149,7 @@ public class DBHandler implements IDBHandle {
 			}
 
 		} catch (SQLException esql) {	
-			
+
 			esql.printStackTrace();
 			System.out.println(searchSql);
 		} catch (ClassNotFoundException e) {
@@ -188,6 +187,7 @@ public class DBHandler implements IDBHandle {
 	@Override
 	public List<EquipmentBean> getAllEquipments() {
 		List<EquipmentBean> retVal = new LinkedList<EquipmentBean>();
+		retVal.add(new EquipmentBean(-1, "(nichts)"));
 		try {
 			setConnection();
 			Statement stmt = getConnection().createStatement();
@@ -208,5 +208,46 @@ public class DBHandler implements IDBHandle {
 		return retVal;
 	}
 
+	@Override
+	public boolean createReservation(ReservationSearchBean reserv, VacationBean vac, int kundenNr) {
+		DateFormat deDate = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.GERMANY);
+		Connection c = null;
+		try {
+			setConnection();
+			c = getConnection();
+			Statement stmt = c.createStatement();
+			String sql = 
+			  "INSERT INTO Reservierung (" +
+					" DatumVon, " +
+					" DatumBis, " +
+					" FeNr, " +
+					" KundenNr, " +
+					" BuchungsNr, ErstellungsDatum, Zahlungseingang, Bewertung)" +
+					" VALUES (" +
+					" to_date('" +  deDate.format(reserv.getDatumVon()) + "', 'dd.mm.yyyy')," +
+					" to_date('" + deDate.format(reserv.getDatumBis()) + "', 'dd.mm.yyyy'), " +
+					vac.getNr() + ", " +
+					kundenNr + ", " +
+			" NULL, NULL, NULL, NULL)";
+			
+			stmt.executeUpdate(sql);
+					
+			System.out.println(sql);
+			c.commit();
+			return true;
+		} catch (SQLException e) {
+			try {
+				if (c != null && !c.isClosed()) {
+					c.rollback();
+				}
+			} catch (SQLException e1) {
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			closeConnection();
+		}
+		return false;
+	}
 
 }

@@ -2,6 +2,16 @@ package data;
 
 public class EquipmentBean {
 	
+	public EquipmentBean() {
+		super();
+	}
+	
+	public EquipmentBean(int equipNr, String name) {
+		super();
+		this.equipNr = equipNr;
+		this.name = name;
+	}
+
 	private int equipNr;
 	private String name;
 	
@@ -22,7 +32,7 @@ public class EquipmentBean {
 	
 	@Override
 	public String toString() {
-		return this.getName() + " (" + this.getEquipNr() + ")";
+		return this.getName();
 	}
 
 }

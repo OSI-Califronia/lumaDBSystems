@@ -10,6 +10,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -175,7 +176,6 @@ public class DlgVacationSearch extends JDialog {
 	public JComboBox<EquipmentBean> getCbxEquipment() {
 		if (cbxEquipment == null) {
 			cbxEquipment = new JComboBox<EquipmentBean>(table.getHandler().getAllEquipments().toArray(new EquipmentBean[0]));
-			cbxEquipment.setEditable(true);
 			cbxEquipment.setPreferredSize(new Dimension(200, 30));
 		}
 		return cbxEquipment;		
@@ -222,6 +222,10 @@ public class DlgVacationSearch extends JDialog {
 					
 					if (getCbxCountry().getSelectedIndex() != -1) {
 						searchBean.setIsoLand((((CountryBean) getCbxCountry().getSelectedItem()).getISOLand()));
+					}
+					
+					if (cbxEquipment.getSelectedItem() instanceof EquipmentBean) {
+						searchBean.setAustNr(((EquipmentBean) cbxEquipment.getSelectedItem()).getEquipNr());
 					}
 					
 					table.doSearch(searchBean);					

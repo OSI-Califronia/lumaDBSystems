@@ -11,4 +11,6 @@ public interface IDBHandle {
 	
 	public List<EquipmentBean> getAllEquipments();
 	
+	public boolean createReservation(ReservationSearchBean reserv, VacationBean vac, int kundenNr);
+	
 }

@@ -1,9 +1,11 @@
 package gui.tables;
 
 import gui.MainWindow;
+import gui.dialogs.DlgVacationBook;
 import gui.dialogs.DlgVacationSearch;
 import gui.navigation.MnuTblVacation;
 
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,6 +17,7 @@ import data.IDBHandle;
 import data.ReservationSearchBean;
 import data.VacationBean;
 
+@SuppressWarnings("serial")
 public class TblVacationList extends JTable {
 	
 	private class SearchAction implements ActionListener {
@@ -22,32 +25,36 @@ public class TblVacationList extends JTable {
 		public void actionPerformed(ActionEvent e) {
 			getSearchDialog().setVisible(true);
 			getSearchDialog().setModal(true);
-			
-//			DateFormat deDate = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.GERMANY);
-//
-//			
-//			try {
-//				ReservationSearchBean searchBean = new ReservationSearchBean(
-//						"ES", 2, deDate.parse("01.11.2012"), deDate.parse("21.11.2012"), 2);
-//				
-//				List<VacationBean> list = getHandler().searchForHolidayVacation(searchBean);
-//				getTableModel().setDataToModel(list);			
-//				
-//			} catch (ParseException e1) {				
-//				e1.printStackTrace();
-//			}
+		}
+	}
+	
+	private class BookSelectedAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				if (resultBuffer == null) 
+					return;
+				VacationBean v = resultBuffer.get(TblVacationList.this.getSelectedRow());
+				DlgVacationBook bookDialog = new DlgVacationBook(searchBuffer, v, TblVacationList.this);
+				bookDialog.setModalityType(Dialog.ModalityType.DOCUMENT_MODAL);
+				bookDialog.setVisible(true);
+			} catch (IndexOutOfBoundsException ex) {
+				JOptionPane.showMessageDialog(mainWindow, "Kein Eintrag selektiert!");
+			}
 		}
 	}
 	
 	private IDBHandle handle;
 	private static VacationTableModel model;
-
+	List<VacationBean> resultBuffer;
+	ReservationSearchBean searchBuffer = null;
+	
 	private MainWindow mainWindow;
 	private MnuTblVacation tblMenu;
 	private DlgVacationSearch dlgSearch;
 
-
-	protected SearchAction searchAction;
+	private SearchAction searchAction;
+	private BookSelectedAction bookAction;
 
 	public TblVacationList(MainWindow mainWindow, IDBHandle handle) {
 		super(getTableModel());
@@ -55,6 +62,7 @@ public class TblVacationList extends JTable {
 		this.handle = handle;
 
 		this.mainWindow = mainWindow;
+
 		
 		this.mainWindow.getJMenuBar().add(getTblMenu());
 		this.mainWindow.pack();
@@ -66,11 +74,6 @@ public class TblVacationList extends JTable {
 	public void refreshList() {
 		doSearch(new ReservationSearchBean());
 	}
-
-	// public void showNoEntryFoundMessage() {
-	// JOptionPane.showMessageDialog(frmMainWindow,
-	// "Keinen Eintrag mit den Suchkriterien gefunden");
-	// }
 
 	public MnuTblVacation getTblMenu() {
 		if (tblMenu == null) {
@@ -92,6 +95,13 @@ public class TblVacationList extends JTable {
 		}
 		return searchAction;
 	}
+	
+	public ActionListener getBookSelectedAction() {
+		if (bookAction == null) {
+			bookAction = new BookSelectedAction();
+		}
+		return bookAction;
+	}
 
 	public IDBHandle getHandler() {
 		return handle;
@@ -105,9 +115,10 @@ public class TblVacationList extends JTable {
 	}
 	
 	public void doSearch(ReservationSearchBean searchBean) {
-		List<VacationBean> list = getHandler().searchForHolidayVacation(searchBean);
+		this.searchBuffer = searchBean;
+		resultBuffer = getHandler().searchForHolidayVacation(searchBean);
 		
-		if (list.isEmpty()) {
+		if (resultBuffer.isEmpty()) {
 			JOptionPane.showMessageDialog(mainWindow,
 					"Für diese Suchkriterien wurde kein Eintrag gefunden");
 			return;
@@ -115,7 +126,8 @@ public class TblVacationList extends JTable {
 		
 		getSearchDialog().setVisible(false);	
 		mainWindow.setVisible(true);
-		getTableModel().setDataToModel(list);			
+	
+		getTableModel().setDataToModel(resultBuffer);			
 	}
 	
 }

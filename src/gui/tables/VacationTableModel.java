@@ -7,6 +7,7 @@ import javax.swing.table.AbstractTableModel;
 import data.VacationBean;
 
 
+@SuppressWarnings("serial")
 public class VacationTableModel extends AbstractTableModel {
 	
 	public static final int NUMBER = 0;

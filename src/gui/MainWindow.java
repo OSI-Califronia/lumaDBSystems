@@ -70,7 +70,7 @@ public class MainWindow extends JFrame {
 		}
 		
 		this.setTitle("Woerterbuch");
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addWindowListener(getCloseAction());
         Dimension dim = new Dimension(800, 600);
         this.setPreferredSize(dim);
